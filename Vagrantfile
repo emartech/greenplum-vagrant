@@ -11,10 +11,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder "remote", "/var/local"
 
 
-  config.vm.define :mdw do |mdw_config|
-    mdw_config.vm.network :private_network, ip: "192.168.2.11"
-    mdw_config.vm.provision :shell, path: "gp.sh"
-    mdw_config.vm.provision :shell, path: "gpInstall.sh"
+  config.vm.define "gpdb" do |gpdb|
+    gpdb.vm.network :private_network, ip: "192.168.2.11"
+    gpdb.vm.provision :shell, path: "gp.sh"
+    gpdb.vm.provision :shell, path: "gpInstall.sh"
   end
+
+  # config.vm.define "gpdb-chef" do |gpdb|
+  #   gpdb.vm.network :private_network, ip: "192.168.2.13"
+  #
+  #   gpdb.vm.provision :shell, inline: "curl -s -L https://www.opscode.com/chef/install.sh | bash"
+  #
+  #   gpdb.vm.provision "chef_solo" do |chef|
+  #     chef.add_recipe "greenplum"
+  #   end
+  # end
 
 end

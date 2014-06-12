@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-yum install -y expect mc
+yum install -y expect
 
 cd /var/local
 /usr/bin/expect<<EOF
