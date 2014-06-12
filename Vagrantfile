@@ -1,8 +1,10 @@
-Vagrant.configure("2") do |config|
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "centos64-x86_64-20140116"
+  config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v6.4.2/centos64-x86_64-20140116.box"
 
   config.vm.provider :virtualbox do |v, override|
-    # override.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-vbox4210-nocm.box"
     v.memory = 1024
   end
 
