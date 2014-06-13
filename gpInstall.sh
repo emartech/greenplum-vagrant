@@ -17,27 +17,22 @@ hostname ${MASTER_HOSTNAME}.${MASTER_DOMAINNAME}
 
 adduser -m -U -p "$(openssl passwd -1 'gpadmin')" gpadmin
 
-ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-
-mv ~/.ssh /home/gpadmin/
-chown -R gpadmin:gpadmin /home/gpadmin
-
-su - gpadmin -c "ssh -o StrictHostKeyChecking=no localhost echo Added localhost to ~/.ssh/known_hosts" 2>&1 >/dev/null
-su - gpadmin -c "ssh -o StrictHostKeyChecking=no ${MASTER_HOSTNAME} echo Added ${MASTER_HOSTNAME} to ~/.ssh/known_hosts" 2>&1 >/dev/null
-su - gpadmin -c "ssh -o StrictHostKeyChecking=no ${MASTER_HOSTNAME}.${MASTER_DOMAINNAME} echo Added ${MASTER_HOSTNAME}.${MASTER_DOMAINNAME} to ~/.ssh/known_hosts" 2>&1 >/dev/null
-
-
-cp -R /vagrant/remote/gpconfigs /home/gpadmin/
+cp -R /vagrant/remote/{gpconfigs,bin,.bash_profile} /home/gpadmin/
+chmod 755 /home/gpadmin/bin/*
 
 echo ${MASTER_HOSTNAME} > /home/gpadmin/gpconfigs/hostlist_singlenode
 sed -i "s/###HOSTNAME###/${MASTER_HOSTNAME}/" /home/gpadmin/gpconfigs/gpinitsystem_config
 
-cp /vagrant/remote/.bash_profile /home/gpadmin/
+ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+mv ~/.ssh /home/gpadmin/
 
-mkdir /gpdata1 /gpdata2 /gpmaster
-
+mkdir -p /gpdata1 /gpdata2 /gpmaster
 chown -R gpadmin:gpadmin /home/gpadmin /gpdata1 /gpdata2 /gpmaster
+
+su - gpadmin -c "ssh -o StrictHostKeyChecking=no localhost echo Added localhost to ~/.ssh/known_hosts" 2>&1 >/dev/null
+su - gpadmin -c "ssh -o StrictHostKeyChecking=no ${MASTER_HOSTNAME} echo Added ${MASTER_HOSTNAME} to ~/.ssh/known_hosts" 2>&1 >/dev/null
+su - gpadmin -c "ssh -o StrictHostKeyChecking=no ${MASTER_HOSTNAME}.${MASTER_DOMAINNAME} echo Added ${MASTER_HOSTNAME}.${MASTER_DOMAINNAME} to ~/.ssh/known_hosts" 2>&1 >/dev/null
 
 
 echo "kernel.shmmax = 500000000" > /etc/sysctl.conf
@@ -66,11 +61,13 @@ echo "*hard nproc  131072" >> /etc/security/limits.conf
 
 sysctl -p
 
+
 service iptables save
 service iptables stop
 chkconfig iptables off
 
 /etc/init.d/ntpd start
+
 
 su - gpadmin -c 'gpinitsystem -c gpconfigs/gpinitsystem_config -a'
 
@@ -82,8 +79,13 @@ chkconfig --add gpfdist
 chkconfig greenplum on
 chkconfig gpfdist on
 
-# service greenplum start
+echo -e "\nhost\tall\tall\t0.0.0.0/0\tmd5\n" >> /gpmaster/gpsne-1/pg_hba.conf
+
+service greenplum restart
 service gpfdist start
+
+su - gpadmin -c "createdb gpadmin"
+
 
 
 
