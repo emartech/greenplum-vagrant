@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# chkconfig: - 64 36
+# description: Greenplum Server
+#
+
+
+. /etc/rc.d/init.d/functions
+
+TYPESET=`typeset -f|grep "declare"`
+
+. /etc/sysconfig/network
+
+NAME=`basename $0`
+if [ ${NAME:0:1} = "S" -o ${NAME:0:1} = "K" ];then
+  NAME=${NAME:3}
+fi
+
+if [ -x /sbin/runuser ];then
+  SU=runuser
+else
+  SU=su
+fi
+
+[ "${NETWORKING}" = "no" ] && exit 1
+
+script_result=0
+
+start(){
+  PSQL_START=$"Starting ${NAME} service: "
+
+  echo -n "$PSQL_START"
+  $SU -l gpadmin -c "gpstart -a"
+  sleep 2
+  success "$PSQL_START"
+  echo
+}
+
+stop(){
+  echo -n $"Stopping ${NAME} service: "
+  $SU -l gpadmin -c "gpstop -ia"
+  ret=$?
+  echo_success
+  echo
+}
+
+restart(){
+  stop
+  start
+}
+
+reload(){
+  $SU -l gpadmin -c "gpstop -u"
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+	stop)
+	    stop
+	    ;;
+	restart)
+	    restart
+	    ;;
+	reload|force-reload)
+	    reload
+	    ;;
+	*)
+	    echo $"Usage: $0 {start|stop|restart|reload|force-reload}"
+	    exit 1
+esac
+
+exit $script_result

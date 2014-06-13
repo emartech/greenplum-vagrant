@@ -2,7 +2,7 @@
 
 yum install -y expect
 
-cd /var/local
+cd /vagrant/remote
 /usr/bin/expect<<EOF
 
 spawn  /bin/bash greenplum-db-4.2.6.1-build-1-RHEL5-x86_64.bin

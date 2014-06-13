@@ -1,0 +1,77 @@
+#!/bin/sh
+#
+# chkconfig: - 64 36
+# description: gpfdist daemon
+#
+
+
+GPFD_DIR="/home/gpadmin/smart-insight-data/"
+GPFD_LOG="/home/gpadmin/gpfdist.log"
+GPFD_PORT="8123"
+
+
+GPFD_COMMAND="gpfdist -d ${GPFD_DIR} -p ${GPFD_PORT} -t 3 -m 65535 -V"
+
+. /etc/rc.d/init.d/functions
+
+TYPESET=`typeset -f|grep "declare"`
+
+. /etc/sysconfig/network
+
+NAME=`basename $0`
+if [ ${NAME:0:1} = "S" -o ${NAME:0:1} = "K" ];then
+  NAME=${NAME:3}
+fi
+
+if [ -x /sbin/runuser ];then
+  SU=runuser
+else
+  SU=su
+fi
+
+[ "${NETWORKING}" = "no" ] && exit 1
+
+script_result=0
+
+start(){
+  GPFD_START=$"Starting ${NAME} service: "
+
+  # ensure if GPFD_DIR is exists
+  [ -d ${GPFD_DIR} ] || su -l gpadmin -c "mkdir -p ${GPFD_DIR}"
+
+  echo -n "$GPFD_START"
+  $SU -l gpadmin -c "$GPFD_COMMAND >${GPFD_LOG} 2>&1 &"
+  sleep 1
+  success "$GPFD_START"
+  echo
+}
+
+stop(){
+  echo -n $"Stopping ${NAME} service: "
+  $SU -l gpadmin -c "pkill -u gpadmin -f \"$GPFD_COMMAND\" >/dev/null 2>&1"
+  ret=$?
+  echo_success
+  echo
+}
+
+restart(){
+  stop
+  start
+}
+
+case "$1" in
+	start)
+	    start
+	    ;;
+	stop)
+	    stop
+	    ;;
+	restart)
+	    restart
+	    ;;
+	*)
+	    echo $"Usage: $0 {start|stop|restart}"
+	    exit 1
+esac
+
+exit $script_result

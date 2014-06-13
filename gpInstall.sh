@@ -28,11 +28,12 @@ su - gpadmin -c "ssh -o StrictHostKeyChecking=no ${MASTER_HOSTNAME} echo Added $
 su - gpadmin -c "ssh -o StrictHostKeyChecking=no ${MASTER_HOSTNAME}.${MASTER_DOMAINNAME} echo Added ${MASTER_HOSTNAME}.${MASTER_DOMAINNAME} to ~/.ssh/known_hosts" 2>&1 >/dev/null
 
 
-cp -R /var/local/gpconfigs /home/gpadmin/
+cp -R /vagrant/remote/gpconfigs /home/gpadmin/
+
 echo ${MASTER_HOSTNAME} > /home/gpadmin/gpconfigs/hostlist_singlenode
 sed -i "s/###HOSTNAME###/${MASTER_HOSTNAME}/" /home/gpadmin/gpconfigs/gpinitsystem_config
 
-cp /var/local/.bash_profile /home/gpadmin/
+cp /vagrant/remote/.bash_profile /home/gpadmin/
 
 mkdir /gpdata1 /gpdata2 /gpmaster
 
@@ -72,3 +73,18 @@ chkconfig iptables off
 /etc/init.d/ntpd start
 
 su - gpadmin -c 'gpinitsystem -c gpconfigs/gpinitsystem_config -a'
+
+cp /vagrant/remote/init.d/* /etc/init.d/
+chmod 755 /etc/init.d/{greenplum,gpfdist}
+
+chkconfig --add greenplum
+chkconfig --add gpfdist
+chkconfig greenplum on
+chkconfig gpfdist on
+
+# service greenplum start
+service gpfdist start
+
+
+
+
