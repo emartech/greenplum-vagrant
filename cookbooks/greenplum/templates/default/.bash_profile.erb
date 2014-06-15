@@ -8,8 +8,9 @@ fi
 # User specific environment and startup programs
 
 export PATH=$PATH:$HOME/bin
-export GPHOME=/usr/local/greenplum-db
 export MASTER_DATA_DIRECTORY=/gpmaster/gpsne-1
 
+source /usr/local/greenplum-db-<%= node['greenplum']['version'] %>/greenplum_path.sh
 
-source /usr/local/greenplum-db/greenplum_path.sh
+alias wait_for_greenplum='until [ "0" == "$(gpstate -q; echo $?)" ]; do sleep 5; done'
+

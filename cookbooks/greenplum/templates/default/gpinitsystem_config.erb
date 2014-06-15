@@ -22,7 +22,7 @@ ARRAY_NAME="GPDB SINGLENODE"
 # directory where the gpinitsystem utility is executed, specify
 # the absolute path to the file.
 
-MACHINE_LIST_FILE=/home/gpadmin/gpconfigs/hostlist_singlenode
+MACHINE_LIST_FILE=/home/gpadmin/hostlist_singlenode
 
 
 # This specifies a prefix that will be used to name the data directories
@@ -62,7 +62,7 @@ declare -a DATA_DIRECTORY=(/gpdata1 /gpdata2)
 
 # The OS-configured hostname of the Greenplum Database master instance.
 
-MASTER_HOSTNAME=###HOSTNAME###
+MASTER_HOSTNAME=<%= node['hostname'] %>
 
 
 # The location where the data directory will be created on the
@@ -116,4 +116,4 @@ ENCODING=UNICODE
 # system is initialized. You can always create a database later using
 # the CREATE DATABASE command or the createdb script.
 
-#DATABASE_NAME=warehouse
+DATABASE_NAME=gpadmin

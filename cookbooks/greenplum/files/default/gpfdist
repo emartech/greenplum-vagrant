@@ -5,7 +5,7 @@
 #
 
 
-GPFD_DIR="/home/gpadmin/smart-insight-data/"
+GPFD_DIR="/home/gpadmin/gpfdist-data"
 GPFD_LOG="/home/gpadmin/gpfdist.log"
 GPFD_PORT="8123"
 
@@ -37,7 +37,7 @@ start(){
   GPFD_START=$"Starting ${NAME} service: "
 
   # ensure if GPFD_DIR is exists
-  [ -d ${GPFD_DIR} ] || su -l gpadmin -c "mkdir -p ${GPFD_DIR}"
+  [ -d ${GPFD_DIR} ] || $SU -l gpadmin -c "mkdir -p ${GPFD_DIR}"
 
   echo -n "$GPFD_START"
   $SU -l gpadmin -c "$GPFD_COMMAND >${GPFD_LOG} 2>&1 &"
@@ -68,6 +68,10 @@ case "$1" in
 	    ;;
 	restart)
 	    restart
+	    ;;
+	status)
+	    ps ax | grep -q gpfdist
+	    exit $?
 	    ;;
 	*)
 	    echo $"Usage: $0 {start|stop|restart}"

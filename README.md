@@ -21,16 +21,14 @@ If you see no error when running gpstate, that means Greenplum has been sucessfu
 You may also wish to experiment with a sample database. If you are **not** currently logged into the mdw machine as
 gpadmin, make sure to log in there first (same as above steps)
 
-> 1. vagrant ssh mdw
+> 1. vagrant ssh gpdb
 > 2. su - gpadmin
 > 3. Enter the password. The password is "gpadmin"
 
-As user gpadmin on mdw...
+As user gpadmin...
 ```
 $ createdb world
-$ psql -d world -a -f /var/local/world.sql
 $ psql world
-> select * from city limit 10; 
 ```
 
 

@@ -63,6 +63,10 @@ case "$1" in
 	restart)
 	    restart
 	    ;;
+	status)
+	    $SU -l gpadmin -c "gpstate -q"
+	    exit $?
+	    ;;
 	reload|force-reload)
 	    reload
 	    ;;
