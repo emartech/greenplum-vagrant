@@ -1,0 +1,8 @@
+DEPENDENCIES
+  greenplum
+    git: git://github.com/emartech/chef-cookbooks.git
+    revision: 379551fb59a0e7e63ac33b58851e4fb809fc5f52
+    rel: greenplum
+
+GRAPH
+  greenplum (0.1.0)

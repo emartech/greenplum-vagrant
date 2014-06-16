@@ -1,38 +1,26 @@
 Greenplum VM
---------------
---------------
+------------
+---
+
 Enter following commands in your terminal window
-```
+
+```bash
 $ git init
-$ git clone https://github.com/kailashjoshi/greenplum.git
-$ cd greenplum
+$ git clone https://github.com/emartech/greenplum-vagrant.git
+$ cd greenplum-vagrant
+$ vagrant plugin install vagrant-berkshelf --plugin-version ">= 2.0.1" # in case you haven't done it earlier
 $ vagrant up
 ```
 
-Test the installation
---------------
---------------
-1. Run "gpstate" from your terminal window
 
-If you see no error when running gpstate, that means Greenplum has been sucessfully completed.
 
-## Using a sample database ##
-
-You may also wish to experiment with a sample database. If you are **not** currently logged into the mdw machine as
-gpadmin, make sure to log in there first (same as above steps)
-
-> 1. vagrant ssh gpdb
-> 2. su - gpadmin
-> 3. Enter the password. The password is "gpadmin"
-
-As user gpadmin...
-```
-$ createdb world
-$ psql world
+Create a database
+-----------------
+```bash
+$ vagrant ssh
+$ sudo su - gpadmin
+$ createdb a_database
+$ psql a_database
 ```
 
-
-
-
-
-emarsys
+The gpadmin user's password is gpadmin.
